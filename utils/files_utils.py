@@ -205,33 +205,41 @@ def generate_signed_url(blob):
         method="GET"
     )
 
-def download_processed_files(bucket_name=None, prefix="outputs/"):
+def download_processed_files(bucket_name, file_path, expiration=60):
     """
-    Downloads processed files from local or GCS and provides a clickable download button in Streamlit.
+    Downloads a file from GCS and provides a clickable download button in Streamlit.
 
     Parameters:
-        bucket_name (str): The name of the GCS bucket (optional).
-        prefix (str): The folder path prefix for the files.
+        bucket_name (str): The name of the GCS bucket.
+        file_path (str): The full path of the file within the bucket.
+        expiration (int): The expiration time of the signed URL in seconds.
+
+    Returns:
+        str: Signed URL for downloading the file.
     """
     try:
-        client = storage.Client(SERVICE_ACCOUNT_INFO["project_id"])
+        # Initialize the client
+        client = storage.Client()
 
-        # Create a bucket object for our bucket
-        bucket = client.get_bucket(bucket_name)
+        # Get the bucket
+        bucket = client.bucket(bucket_name)
 
-        # Create a blob object from the filepath
-        blob = bucket.blob(SERVICE_ACCOUNT_INFO["bucket_file"])
+        # Get the blob (file) from the bucket
+        blob = bucket.blob(file_path)
 
-        # Upload the file to a destination
-        blob.upload_from_filename(SERVICE_ACCOUNT_INFO["local_file"])
-
-        # Create Signed URL
+        # Generate a signed URL for downloading the file
         signed_url = blob.generate_signed_url(
-                        version="v4",
-                        expiration=timedelta(seconds=60),
-                        method="GET")
-        # Print Signed URL
+            version="v4",
+            expiration=timedelta(seconds=expiration),
+            method="GET"
+        )
+
+        st.success(f"File ready for download: {file_path}")
+        st.markdown(f"[Download]({signed_url})")
+
         return signed_url
+
     except Exception as e:
-            st.error(f"Error downloading from local storage: {str(e)}")
-            return "fucl"
+        st.error(f"Error downloading file from GCS: {str(e)}")
+        st.write("fack")
+        return None

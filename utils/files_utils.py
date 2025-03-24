@@ -217,7 +217,10 @@ def download_processed_files(bucket_name, file_path, expiration=60):
     Returns:
         str: Signed URL for downloading the file.
     """
+    st.write("In function")
+
     try:
+        st.write("Step0")
         # Initialize the client
         client = storage.Client()
 
@@ -227,6 +230,7 @@ def download_processed_files(bucket_name, file_path, expiration=60):
         # Get the blob (file) from the bucket
         blob = bucket.blob(file_path)
 
+        st.write("Step1")
         # Generate a signed URL for downloading the file
         signed_url = blob.generate_signed_url(
             version="v4",

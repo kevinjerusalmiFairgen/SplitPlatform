@@ -213,53 +213,24 @@ def download_processed_files(bucket_name=None, prefix="outputs/"):
         bucket_name (str): The name of the GCS bucket (optional).
         prefix (str): The folder path prefix for the files.
     """
-    if bucket_name:
-        # Use GCS to list and download files
-        try:
-            storage_client = storage.Client()
-            bucket = storage_client.bucket(bucket_name)
-            blobs = list(bucket.list_blobs(prefix=prefix))
-            
-            if not blobs:
-                st.warning("No processed files found in GCS.")
-                return
-            
-            for blob in blobs:
-                # Display file name
-                file_name = os.path.basename(blob.name)
-                st.write(f"File: {file_name}")
+    try
+        client = storage.Client(SERVICE_ACCOUNT_INFO["project_id"])
 
-                # Download file to a temporary file
-                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                    blob.download_to_filename(temp_file.name)
-                    with open(temp_file.name, "rb") as file:
-                        st.download_button(
-                            label=f"Download {file_name}",
-                            data=file,
-                            file_name=file_name,
-                            mime="application/octet-stream"
-                        )
-        except Exception as e:
-            st.error(f"Error downloading from GCS: {str(e)}")
-    else:
-        # Use local file system to list and download files
-        try:
-            files = glob.glob(os.path.join(prefix, "*"))
-            
-            if not files:
-                st.warning("No processed files found locally.")
-                return
+        # Create a bucket object for our bucket
+        bucket = client.get_bucket(bucket_name)
 
-            for file_path in files:
-                file_name = os.path.basename(file_path)
-                st.write(f"File: {file_name}")
+        # Create a blob object from the filepath
+        blob = bucket.blob(SERVICE_ACCOUNT_INFO["bucket_file"])
 
-                with open(file_path, "rb") as file:
-                    st.download_button(
-                        label=f"Download {file_name}",
-                        data=file,
-                        file_name=file_name,
-                        mime="application/octet-stream"
-                    )
-        except Exception as e:
+        # Upload the file to a destination
+        blob.upload_from_filename(SERVICE_ACCOUNT_INFO["local_file"])
+
+        # Create Signed URL
+        signed_url = blob.generate_signed_url(
+                        version="v4",
+                        expiration=timedelta(seconds=60),
+                        method="GET")
+        # Print Signed URL
+        st.write(signed_url)
+    except Exception as e:
             st.error(f"Error downloading from local storage: {str(e)}")

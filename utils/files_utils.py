@@ -8,19 +8,60 @@ import tempfile
 from datetime import timedelta
 import streamlit as st
 
+type = "service_account"
+project_id = "fairgen-dev"
+private_key_id = "70e6e21803cd90766a534cf233a2fbc667f2c613"
+private_key = """
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCMUbmchngPmeoy
+hQndnqYEQ2OQVgP0ZN5n9q5n/qxp9qPyosRS2E1HSfMJeJmcbm3MWxV/LGBV5oGD
+dM/NPJdqUozmXBf1l/1ZVe7kn/m7xcVijdnYQn+LlZKYT1s+vZ9bzOgjGU4u8sN/
+GYyDy69vzZduEP6guJ8sEefAn0BVokcCdXxTFqpNhxkytIQC0g/QktMqUG29YeRk
+tQZgNne28FNEME4BU071L3kiCUGWHI1/zD9fMhEBXy+AKQ0ObUw4r0dxvlCa6vVu
+AXCr7rACfCH5gUTUdTHP59yxVR+3NOZIHNeYdqctVkeOtt8p/LgfuPrqOIHyVtGY
+hMXNlZRDAgMBAAECggEAAhv1C5uLduSSLQGECam13AvtRi7WuDyGG/0M6fFp56Ce
+Bb/6pPlkGI6vRUoOY7l1UIjzxtdjL5vwz3FoFiTzeKp0wo2Y1Y3JrYjVscOnRP6E
+K/k+OCtIrTE/El5qn5Yq6c06D8d6q6RTWgQmCX+CbTw1vT+89T5TfTw3YXngS23I
+vJDkFVq2rRrUHC3arGRWgZm/kxkg0dRlVI4Q3qlQ8+r63vgnvRuWlGPDvZrQF/jQ
+cM8Z/+2lC1IYtqKSl224RNhJahm4f8TkrJKwuvjnU1Xgje1W0SvOgC+zC6pFenf5
+Y1VFlVW/qVwWdQlblgDbdewgIXCNN6QVEiDzCTsBMQKBgQDFKefDdmHFwuHvvTfS
+xEChxIWT6KzOoXzv57tUZzP6N8zORm2pRHEGvvxAxLylkEksLP+uhb3who9FsL6n
+41VITUUa7yLN6XCymupPv1fRY60/IsQjzYYZGlbwuMbHGvxrgXjqSyANS28OvtzQ
+id0FLWL/8HGneCjoVLwVmtmhkwKBgQC2MUCwOp1cU1w89y0cw/HsNb/74rKlqO8N
+8XW9Ssa1ra9PAGbU5LUFzx3bz7z8z6SCXmhrD9u1qJrhE08TNGe+QJGQHjn9vjOw
+4X+qMmjFYDhm9TVBCzO2Y3U9yKh7LaDqU9rpGqb05PTzHEnWEPVARDJEDKme8tc1
+hJ8o11SwkQKBgGVMyo9a25FIN919UpkvzCVRW3BLM75WqmJ4pX8QJ1yAHvI8rUsy
+pv/YULLWYjaOk4nm9NcuUBCskiA0V0DbRI4JZWAZTcCOGCEsBwdCQFSM6g5uRmg+
+yI9NQS4dQcQ60UZLF10JjEZIY58n4TwkGTL3xs3JNBvfWOVF4/0VuouRAoGACppX
+L2pZ2hOn3Ixt/ayRmbOPFrOcvfNU5jTVK0z8v3n6J9jYIy+kMVBaZn5yeywCYOvp
+m8FygeHsEYk0IuP73aCYWBDKQzAchgC5k0gXvNTas3M1xDFIsyaanhvdYj3HjZuP
+s90vNjVU5AkTavfVrgXJ/xfVj0CGscCkGpZdgWECgYEAjESrCkJdvbOXH1PT66o6
+/dGWct8xN1dVZosK1U/vguI7MnovlrsJqDmdHlD0/7/cstZXKsF/wXRdoOBB82vV
+OTMLO9owZEJetEg8INZ2E+qacIGmLUeRvtFKqLWt4ji/Z5Rh/VMdO2kSl+9wlTCg
+sFzzRtABT5k6BEaea1Tv1MU=
+-----END PRIVATE KEY-----
+"""
+client_email = "cs-materials@fairgen-dev.iam.gserviceaccount.com"
+client_id = "103205185693481221052"
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
+client_x509_cert_url = "https://www.googleapis.com/robot/v1/metadata/x509/cs-materials%40fairgen-dev.iam.gserviceaccount.com"
+universe_domain = "googleapis.com"
+
 # Replace these with your actual service account info or load them securely.
 SERVICE_ACCOUNT_INFO = {
-    "type":  st.secrets["type"],
-    "project_id": st.secrets["project_id"],
-    "private_key_id": st.secrets["private_key_id"],
-    "private_key": st.secrets["private_key"],
-    "client_email": st.secrets["client_email"],
-    "client_id": st.secrets["client_id"],
-    "auth_uri": st.secrets["auth_uri"],
-    "token_uri": st.secrets["token_uri"],
-    "auth_provider_x509_cert_url": st.secrets["auth_provider_x509_cert_url"],
-    "client_x509_cert_url": st.secrets["client_x509_cert_url"],
-    "universe_domain": st.secrets["universe_domain"],
+    "type":  type, #st.secrets["type"],
+    "project_id": project_id,# st.secrets["project_id"],
+    "private_key_id": private_key_id,#st.secrets["private_key_id"],
+    "private_key": private_key,#st.secrets["private_key"],
+    "client_email": client_email,#st.secrets["client_email"],
+    "client_id": client_id,#st.secrets["client_id"],
+    "auth_uri": auth_uri,#st.secrets["auth_uri"],
+    "token_uri": token_uri,#st.secrets["token_uri"],
+    "auth_provider_x509_cert_url": auth_provider_x509_cert_url,#st.secrets["auth_provider_x509_cert_url"],
+    "client_x509_cert_url": client_x509_cert_url,#st.secrets["client_x509_cert_url"],
+    "universe_domain": universe_domain,#st.secrets["universe_domain"],
 }
 
 BUCKET_NAME = "fairgen-cs-materials"

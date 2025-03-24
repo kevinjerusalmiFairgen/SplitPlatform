@@ -83,12 +83,13 @@ def app():
         for idx, (train_df, holdout_df, baseline_df) in enumerate(split_results):
             suffix = f"_batch_{idx+1}" if st.session_state["boostrap"] else ""
             
-            files_utils.save_file(df=train_df, metadata=meta, file_path=f"outputs/train_{train_size}{suffix}" + "." +  st.session_state["file_type"])
-            files_utils.save_file(df=holdout_df, metadata=meta, file_path=f"outputs/holdout_{holdout_size}{suffix}" + "." + st.session_state["file_type"])
+            files_utils.save_file(df=train_df, metadata=meta, file_path=f"train_{train_size}{suffix}" + "." +  st.session_state["file_type"])
+            files_utils.save_file(df=holdout_df, metadata=meta, file_path=f"holdout_{holdout_size}{suffix}" + "." + st.session_state["file_type"])
 
             if baseline_df is not None:
-                files_utils.save_file(df=baseline_df, metadata=meta, file_path=f"outputs/holdout_{train_size*2}{suffix}" + "." + st.session_state["file_type"])
+                files_utils.save_file(df=baseline_df, metadata=meta, file_path=f"baseline_{train_size*2}{suffix}" + "." + st.session_state["file_type"])
 
         st.success("Data has been successfully split!")
         
-        st.write(f"outputs/train_{train_size}{suffix}" + "." +  st.session_state["file_type"])
+        if st.button("Download Processed Files"):
+            files_utils.download_processed_files(bucket_name="fairgen-cs-materials")

@@ -10,3 +10,4 @@ streamlit_vertical_slider==2.5.5
 google-cloud-storage
 streamlit-vertical-slider
 streamlit_toggle
+glob

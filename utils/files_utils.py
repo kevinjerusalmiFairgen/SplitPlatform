@@ -7,6 +7,8 @@ from google.oauth2 import service_account
 import tempfile
 from datetime import timedelta
 import streamlit as st
+import glob
+
 
 
 
@@ -158,7 +160,6 @@ def save_file(df, file_path, metadata=None):
         blob.upload_from_filename(temp_file_path)
 
         print(f"✅ File saved successfully to GCP at gs://{BUCKET_NAME}/{blob_name}")
-        return 
 
     except Exception as e:
         print(e)
@@ -204,45 +205,55 @@ def generate_signed_url(blob):
         method="GET"
     )
 
-def download_processed_files():
+def download_processed_files(bucket_name=None, prefix="outputs/"):
     """
-    Loads processed files from the "Processed-Files" folder in your GCP bucket and 
-    provides a clickable download link for each file so that customers can download the file.
+    Downloads processed files from local or GCS and provides a clickable download button in Streamlit.
+
+    Parameters:
+        bucket_name (str): The name of the GCS bucket (optional).
+        prefix (str): The folder path prefix for the files.
     """
-    try:
-        # Create credentials and storage client
-        credentials = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_INFO)
-        client = storage.Client(project=SERVICE_ACCOUNT_INFO["project_id"], credentials=credentials)
-        bucket = client.bucket(BUCKET_NAME)
+    if bucket_name:
+        # Use GCS to list and download files
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blobs = list(bucket.list_blobs(prefix=prefix))
         
-        # List blobs under the "Processed-Files/" prefix
-        blobs = list(bucket.list_blobs(prefix="Processed-Files/"))
         if not blobs:
-            st.info("No processed files found in GCP.")
-        else:
-            st.write("### Processed Files in GCP:")
-            for blob in blobs:
-                # Extract the file name from blob path (e.g., "Processed-Files/train_100.csv" becomes "train_100.csv")
-                file_name = os.path.basename(blob.name)
+            st.warning("No processed files found in GCS.")
+            return
+        
+        for blob in blobs:
+            # Display file name
+            st.write(f"File: {blob.name}")
+            
+            # Download file to temporary location
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                blob.download_to_filename(temp_file.name)
+                
+                with open(temp_file.name, "rb") as file:
+                    st.download_button(
+                        label=f"Download {os.path.basename(blob.name)}",
+                        data=file,
+                        file_name=os.path.basename(blob.name),
+                        mime="application/octet-stream"
+                    )
+    else:
+        # Use local file system to list and download files
+        files = glob.glob(os.path.join(prefix, "*"))
+        
+        if not files:
+            st.warning("No processed files found locally.")
+            return
 
-                # Generate a signed URL valid for 1 hour (3600 seconds)
-                signed_url = blob.generate_signed_url(
-                    expiration=3600,  # URL valid for 1 hour
-                    method="GET"
-                )
+        for file_path in files:
+            file_name = os.path.basename(file_path)
+            st.write(f"File: {file_name}")
 
-                # Print signed URL to console for debugging
-                print(f"Generated signed URL for {file_name}: {signed_url}")
-
-                # Display the download link using HTML
-                st.markdown(
-                    f"""
-                    <a href="{signed_url}" download="{file_name}" target="_blank" style="text-decoration:none;color:blue;">
-                        📥 Download {file_name}
-                    </a>
-                    """,
-                    unsafe_allow_html=True,
-                )
-    except Exception as e:
-        st.write(f"Error: {e}")
-        st.error(f"Error loading processed files: {e}")
+            with open(file_path, "rb") as file:
+                st.download_button(
+                    label=f"Download {file_name}",
+                    data=file,
+                    file_name=file_name,
+                    mime="application/octet-stream"
+                )    

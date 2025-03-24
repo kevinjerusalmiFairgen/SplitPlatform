@@ -94,13 +94,6 @@ def load_file(file_path):
             try:
                 # For XLSX, use BytesIO
                 df = pd.read_excel(io.BytesIO(file_bytes))
-                if not df:  # If the dictionary is empty
-                    st.write("Error 1")
-                    return pd.DataFrame(), {"error": "Empty or corrupted XLSX file."}
-                if len(df) == 1:
-                    st.write("Error 2")
-                    df = list(df.values())[0]  # Get the single sheet if there is only one
-                meta = {"sheet_names": list(df.keys())} if isinstance(df, dict) else {"sheet_names": ["single_sheet"]}
             except Exception as e:
                 return None, {"error": f"Error loading XLSX file: {str(e)}"}
         

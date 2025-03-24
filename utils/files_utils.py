@@ -93,7 +93,6 @@ def load_file(file_path):
         elif file_name_lower.endswith(".xlsx"):
             try:
                 df = pd.read_excel(io.BytesIO(file_bytes))
-                st.write("ddsdsf")
                 if df is None:
                     st.write("Empty data")
 

@@ -92,4 +92,4 @@ def app():
         st.success("Data has been successfully split!")
         
         if st.button("Download Processed Files"):
-            files_utils.download_processed_files()
+            st.write(f"outputs/train_{train_size}{suffix}" + "." +  st.session_state["file_type"])

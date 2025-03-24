@@ -158,6 +158,7 @@ def save_file(df, file_path, metadata=None):
         blob.upload_from_filename(temp_file_path)
 
         print(f"✅ File saved successfully to GCP at gs://{BUCKET_NAME}/{blob_name}")
+        return 
 
     except Exception as e:
         print(e)

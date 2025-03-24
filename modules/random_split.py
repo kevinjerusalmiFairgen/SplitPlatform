@@ -95,8 +95,11 @@ def app():
             if baseline_df is not None:
                 baseline_signed_url = files_utils.download_processed_files(bucket_name="fairgen-cs-materials", file_path=f"Processed-Files/train_{train_size*2}{suffix}" + "." +  st.session_state["file_type"])
             
-            st.markdown(f"[Click Here to get your train set]({train_signed_url})")
-            st.markdown(f"[Click Here to get your holdout set]({holdout_signed_url})")
-            if baseline_df is not None:
-                st.markdown(f"[Click Here to get your baseline set]({baseline_signed_url})")
+            # st.markdown(f"[Click Here to get your train set]({train_signed_url})")
+            # st.markdown(f"[Click Here to get your holdout set]({holdout_signed_url})")
+            # if baseline_df is not None:
+            #     st.markdown(f"[Click Here to get your baseline set]({baseline_signed_url})")
+            st.write(train_signed_url)
+            st.write(holdout_signed_url)
+
             

@@ -93,6 +93,7 @@ def load_file(file_path):
         elif file_name_lower.endswith(".xlsx"):
             try:
                 df = pd.read_excel(io.BytesIO(file_bytes), engine='openpyxl')
+                st.dataframe(df)
                 if df is None:
                     st.write("Empty data")
 
@@ -110,7 +111,6 @@ def load_file(file_path):
         else:
             return None, {"error": "Unsupported file type"}
         
-        st.dataframe(df)
         return df, meta
 
     except Exception as e:

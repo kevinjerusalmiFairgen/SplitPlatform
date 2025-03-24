@@ -92,7 +92,6 @@ def load_file(file_path):
         
         elif file_name_lower.endswith(".xlsx"):
             # For XLSX, use BytesIO
-            st.write("XLSX here")
             df = pd.read_excel(io.BytesIO(file_bytes), sheet_name=None)
             if len(df) == 1:
                 df = list(df.values())[0]
@@ -133,6 +132,7 @@ def save_file(df, file_path, metadata=None):
         if file_type == "csv":
             df.to_csv(temp_file_path, index=False)
         elif file_type == "xlsx":
+            st.write("XLSXXX")
             df.to_excel(temp_file_path, index=False, engine="xlsxwriter")
         elif file_type == "sav":
             pyreadstat.write_sav(

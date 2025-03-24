@@ -1,4 +1,0 @@
-pyreadstat==1.2.7
-pandas
-numpy
-google-cloud-storage

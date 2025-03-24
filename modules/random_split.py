@@ -91,9 +91,9 @@ def app():
 
         #if st.button("Download Processed Files"):
         train_signed_url = files_utils.download_processed_files(bucket_name="fairgen-cs-materials", file_path=f"Processed-Files/train_{train_size}{suffix}" + "." +  st.session_state["file_type"])
-        holdout_signed_url = files_utils.download_processed_files(bucket_name="fairgen-cs-materials", file_path=f"Processed-Files/train_{holdout_size}{suffix}" + "." +  st.session_state["file_type"])
+        holdout_signed_url = files_utils.download_processed_files(bucket_name="fairgen-cs-materials", file_path=f"Processed-Files/holdout_{holdout_size}{suffix}" + "." +  st.session_state["file_type"])
         if baseline_df is not None:
-            baseline_signed_url = files_utils.download_processed_files(bucket_name="fairgen-cs-materials", file_path=f"Processed-Files/train_{train_size*2}{suffix}" + "." +  st.session_state["file_type"])
+            baseline_signed_url = files_utils.download_processed_files(bucket_name="fairgen-cs-materials", file_path=f"Processed-Files/baseline_{train_size*2}{suffix}" + "." +  st.session_state["file_type"])
         
         # st.markdown(f"[Click Here to get your train set]({train_signed_url})")
         # st.markdown(f"[Click Here to get your holdout set]({holdout_signed_url})")

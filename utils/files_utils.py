@@ -220,7 +220,6 @@ def download_processed_files(bucket_name, file_path, expiration=60):
     st.write("In function")
 
     try:
-        st.write("Step0")
         # Initialize the client
         credentials = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_INFO)
         client = storage.Client(project=SERVICE_ACCOUNT_INFO["project_id"], credentials=credentials)
@@ -231,17 +230,12 @@ def download_processed_files(bucket_name, file_path, expiration=60):
         # Get the blob (file) from the bucket
         blob = bucket.blob(file_path)
 
-        st.write("Step1")
         # Generate a signed URL for downloading the file
         signed_url = blob.generate_signed_url(
             version="v4",
             expiration=timedelta(seconds=expiration),
             method="GET"
         )
-
-        st.success(f"File ready for download: {file_path}")
-        st.markdown(f"[Download]({signed_url})")
-
         return signed_url
 
     except Exception as e:

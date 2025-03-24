@@ -91,10 +91,16 @@ def load_file(file_path):
             df = pd.read_csv(io.StringIO(file_str))
         
         elif file_name_lower.endswith(".xlsx"):
-            # For XLSX, use BytesIO
-            df = pd.read_excel(io.BytesIO(file_bytes), sheet_name=None)
-            if len(df) == 1:
-                df = list(df.values())[0]
+            try:
+                # For XLSX, use BytesIO
+                df = pd.read_excel(io.BytesIO(file_bytes), sheet_name=None)
+                if not df:  # If the dictionary is empty
+                    return pd.DataFrame(), {"error": "Empty or corrupted XLSX file."}
+                if len(df) == 1:
+                    df = list(df.values())[0]  # Get the single sheet if there is only one
+                meta = {"sheet_names": list(df.keys())} if isinstance(df, dict) else {"sheet_names": ["single_sheet"]}
+            except Exception as e:
+                return None, {"error": f"Error loading XLSX file: {str(e)}"}
         
         elif file_name_lower.endswith(".sav"):
             # For SAV, write the bytes to a temporary file then use pyreadstat
@@ -104,9 +110,9 @@ def load_file(file_path):
                 temp_file_path = tmp.name
             df, meta = pyreadstat.read_sav(temp_file_path)
             os.remove(temp_file_path)
-        
         else:
             return None, {"error": "Unsupported file type"}
+        
         return df, meta
 
     except Exception as e:

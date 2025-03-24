@@ -213,7 +213,8 @@ def download_processed_files(bucket_name=None, prefix="outputs/"):
         bucket_name (str): The name of the GCS bucket (optional).
         prefix (str): The folder path prefix for the files.
     """
-    try
+    st.write("Hello!")
+    try:
         client = storage.Client(SERVICE_ACCOUNT_INFO["project_id"])
 
         # Create a bucket object for our bucket

@@ -196,7 +196,7 @@ def get_label(metadata, column, value):
 def download_processed_files():
     """
     Loads processed files from the "Processed-Files" folder in your GCP bucket and 
-    provides a download link for each file so that customers can download the file.
+    provides a clickable download link for each file so that customers can download the file.
     """
     try:
         # Create credentials and storage client
@@ -220,7 +220,7 @@ def download_processed_files():
                     method="GET"
                 )
 
-                # Display download link
-                st.markdown(f"[Download {file_name}]({signed_url})")
+                # Display download link using markdown for better visibility
+                st.markdown(f"📁 **[{file_name}]( {signed_url} )**")
     except Exception as e:
         st.error(f"Error loading processed files: {e}")

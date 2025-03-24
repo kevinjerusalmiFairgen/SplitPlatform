@@ -91,18 +91,10 @@ def load_file(file_path):
             df = pd.read_csv(io.StringIO(file_str))
         
         elif file_name_lower.endswith(".xlsx"):
-            try:  
-                # Write the file bytes to a temporary file
-                with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as tmp:
-                    tmp.write(file_bytes)
-                    temp_file_path = tmp.name
-                
-                # Read the file from the temporary location
-                df = pd.read_excel(temp_file_path)
-                print(f"Successfully read {temp_file_path}")
-
-                # Clean up the temporary file
-                os.remove(temp_file_path)
+            try:
+                df = pd.read_excel(io.BytesIO(file_bytes), engine='openpyxl')
+                if df is None:
+                    st.write("Empty data")
 
             except Exception as e:
                 return None, {"error": f"Error loading XLSX file: {str(e)}"}

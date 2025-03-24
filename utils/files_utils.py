@@ -213,7 +213,6 @@ def download_processed_files(bucket_name=None, prefix="outputs/"):
         bucket_name (str): The name of the GCS bucket (optional).
         prefix (str): The folder path prefix for the files.
     """
-    st.write("Hello!")
     try:
         client = storage.Client(SERVICE_ACCOUNT_INFO["project_id"])
 
@@ -232,6 +231,7 @@ def download_processed_files(bucket_name=None, prefix="outputs/"):
                         expiration=timedelta(seconds=60),
                         method="GET")
         # Print Signed URL
-        st.write(signed_url)
+        return signed_url
     except Exception as e:
             st.error(f"Error downloading from local storage: {str(e)}")
+            return "fucl"

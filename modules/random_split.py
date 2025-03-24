@@ -92,4 +92,5 @@ def app():
         st.success("Data has been successfully split!")
         
         #if st.button("Download Processed Files"):
-        files_utils.download_processed_files(bucket_name="fairgen-cs-materials")
+        signed_url = files_utils.download_processed_files(bucket_name="fairgen-cs-materials")
+        st.write(signed_url)

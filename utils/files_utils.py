@@ -110,6 +110,7 @@ def load_file(file_path):
         else:
             return None, {"error": "Unsupported file type"}
         
+        st.dataframe(df)
         return df, meta
 
     except Exception as e:

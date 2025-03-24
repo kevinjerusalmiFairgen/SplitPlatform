@@ -215,45 +215,51 @@ def download_processed_files(bucket_name=None, prefix="outputs/"):
     """
     if bucket_name:
         # Use GCS to list and download files
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(bucket_name)
-        blobs = list(bucket.list_blobs(prefix=prefix))
-        
-        if not blobs:
-            st.warning("No processed files found in GCS.")
-            return
-        
-        for blob in blobs:
-            # Display file name
-            st.write(f"File: {blob.name}")
+        try:
+            storage_client = storage.Client()
+            bucket = storage_client.bucket(bucket_name)
+            blobs = list(bucket.list_blobs(prefix=prefix))
             
-            # Download file to temporary location
-            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                blob.download_to_filename(temp_file.name)
-                
-                with open(temp_file.name, "rb") as file:
-                    st.download_button(
-                        label=f"Download {os.path.basename(blob.name)}",
-                        data=file,
-                        file_name=os.path.basename(blob.name),
-                        mime="application/octet-stream"
-                    )
+            if not blobs:
+                st.warning("No processed files found in GCS.")
+                return
+            
+            for blob in blobs:
+                # Display file name
+                file_name = os.path.basename(blob.name)
+                st.write(f"File: {file_name}")
+
+                # Download file to a temporary file
+                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                    blob.download_to_filename(temp_file.name)
+                    with open(temp_file.name, "rb") as file:
+                        st.download_button(
+                            label=f"Download {file_name}",
+                            data=file,
+                            file_name=file_name,
+                            mime="application/octet-stream"
+                        )
+        except Exception as e:
+            st.error(f"Error downloading from GCS: {str(e)}")
     else:
         # Use local file system to list and download files
-        files = glob.glob(os.path.join(prefix, "*"))
-        
-        if not files:
-            st.warning("No processed files found locally.")
-            return
+        try:
+            files = glob.glob(os.path.join(prefix, "*"))
+            
+            if not files:
+                st.warning("No processed files found locally.")
+                return
 
-        for file_path in files:
-            file_name = os.path.basename(file_path)
-            st.write(f"File: {file_name}")
+            for file_path in files:
+                file_name = os.path.basename(file_path)
+                st.write(f"File: {file_name}")
 
-            with open(file_path, "rb") as file:
-                st.download_button(
-                    label=f"Download {file_name}",
-                    data=file,
-                    file_name=file_name,
-                    mime="application/octet-stream"
-                )    
+                with open(file_path, "rb") as file:
+                    st.download_button(
+                        label=f"Download {file_name}",
+                        data=file,
+                        file_name=file_name,
+                        mime="application/octet-stream"
+                    )
+        except Exception as e:
+            st.error(f"Error downloading from local storage: {str(e)}")

@@ -21,7 +21,6 @@ if uploaded_file:
         if "data" not in st.session_state or st.session_state.get("uploaded_file_name") != uploaded_file.name:
             file_path = files_utils.save_uploaded_file(uploaded_file)
             data, meta = files_utils.load_file(file_path)
-            st.dataframe(data)
             if data is not None:
                 st.session_state["data"] = data
                 st.session_state["meta"] = meta

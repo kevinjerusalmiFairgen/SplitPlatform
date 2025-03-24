@@ -20,8 +20,9 @@ if uploaded_file:
         # Only save and load the file if it's not already in session_state or if a new file is uploaded
         if "data" not in st.session_state or st.session_state.get("uploaded_file_name") != uploaded_file.name:
             file_path = files_utils.save_uploaded_file(uploaded_file)
+            st.write("step1")
             data, meta = files_utils.load_file(file_path)
-
+            st.write("step")
             if data is not None:
                 st.session_state["data"] = data
                 st.session_state["meta"] = meta

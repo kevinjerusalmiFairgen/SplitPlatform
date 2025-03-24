@@ -92,7 +92,6 @@ def load_file(file_path):
         
         elif file_name_lower.endswith(".xlsx"):
             try:
-                # For XLSX, use BytesIO
                 df = pd.read_excel(io.BytesIO(file_bytes))
             except Exception as e:
                 return None, {"error": f"Error loading XLSX file: {str(e)}"}

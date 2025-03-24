@@ -10,9 +10,6 @@ import streamlit as st
 import glob
 
 
-
-
-# Replace these with your actual service account info or load them securely.
 SERVICE_ACCOUNT_INFO = {
     "type": st.secrets["type"],
     "project_id": st.secrets["project_id"],
@@ -26,9 +23,7 @@ SERVICE_ACCOUNT_INFO = {
     "client_x509_cert_url": st.secrets["client_x509_cert_url"],
     "universe_domain": st.secrets["universe_domain"],
 }
-
 BUCKET_NAME = "fairgen-cs-materials"
-
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -97,6 +92,7 @@ def load_file(file_path):
         
         elif file_name_lower.endswith(".xlsx"):
             # For XLSX, use BytesIO
+            st.write("XLSX here")
             df = pd.read_excel(io.BytesIO(file_bytes), sheet_name=None)
             if len(df) == 1:
                 df = list(df.values())[0]

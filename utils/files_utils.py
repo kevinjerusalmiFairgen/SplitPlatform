@@ -222,7 +222,8 @@ def download_processed_files(bucket_name, file_path, expiration=60):
     try:
         st.write("Step0")
         # Initialize the client
-        client = storage.Client()
+        credentials = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_INFO)
+        client = storage.Client(project=SERVICE_ACCOUNT_INFO["project_id"], credentials=credentials)
 
         # Get the bucket
         bucket = client.bucket(bucket_name)

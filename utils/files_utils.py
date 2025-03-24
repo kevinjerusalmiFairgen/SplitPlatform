@@ -217,8 +217,6 @@ def download_processed_files(bucket_name, file_path, expiration=60):
     Returns:
         str: Signed URL for downloading the file.
     """
-    st.write("In function")
-
     try:
         # Initialize the client
         credentials = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_INFO)

@@ -243,4 +243,5 @@ def download_processed_files():
                     unsafe_allow_html=True,
                 )
     except Exception as e:
+        st.write(f"Error: {e}")
         st.error(f"Error loading processed files: {e}")

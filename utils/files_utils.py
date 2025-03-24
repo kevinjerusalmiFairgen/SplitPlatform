@@ -193,6 +193,16 @@ def get_label(metadata, column, value):
     return metadata.variable_value_labels.get(column, {}).get(value, None) 
 
 
+@st.cache_data(show_spinner=False)
+def generate_signed_url(blob):
+    """
+    Generate a signed URL for downloading the file from GCP.
+    """
+    return blob.generate_signed_url(
+        expiration=3600,  # URL valid for 1 hour
+        method="GET"
+    )
+
 def download_processed_files():
     """
     Loads processed files from the "Processed-Files" folder in your GCP bucket and 
@@ -214,19 +224,17 @@ def download_processed_files():
                 # Extract the file name from blob path (e.g., "Processed-Files/train_100.csv" becomes "train_100.csv")
                 file_name = os.path.basename(blob.name)
 
-                # Generate a signed URL valid for 1 hour (3600 seconds)
-                signed_url = blob.generate_signed_url(
-                    expiration=3600,  # URL valid for 1 hour
-                    method="GET"
-                )
+                # Generate signed URL using a cached function to avoid repetition
+                signed_url = generate_signed_url(blob)
 
-                # Display download link using pure HTML for better compatibility
-                html_link = f'''
-                    <a href="{signed_url}" download="{file_name}" style="text-decoration:none;color:blue;" target="_blank">
+                # Display the download link using HTML
+                st.markdown(
+                    f"""
+                    <a href="{signed_url}" target="_blank" style="text-decoration:none;color:blue;">
                         📥 Download {file_name}
                     </a>
-                '''
-                print(signed_url)
-                st.markdown(html_link, unsafe_allow_html=True)
+                    """,
+                    unsafe_allow_html=True,
+                )
     except Exception as e:
         st.error(f"Error loading processed files: {e}")

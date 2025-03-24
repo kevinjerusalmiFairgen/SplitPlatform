@@ -8,3 +8,4 @@ scikit_learn==1.6.1
 streamlit==1.43.2
 streamlit_vertical_slider==2.5.5
 google-cloud-storage
+streamlit_toggle

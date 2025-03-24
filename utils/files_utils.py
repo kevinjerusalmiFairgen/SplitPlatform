@@ -220,7 +220,13 @@ def download_processed_files():
                     method="GET"
                 )
 
-                # Display download link using markdown for better visibility
-                st.markdown(f"📁 **[{file_name}]( {signed_url} )**")
+                # Display download link as HTML to enable direct download
+                st.markdown(f"""
+                    <a href="{signed_url}" download="{file_name}" target="_blank" style="text-decoration:none;">
+                        📂 **Download {file_name}**
+                    </a>
+                """, unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error loading processed files: {e}")
+
+

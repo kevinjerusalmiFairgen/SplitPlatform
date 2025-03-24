@@ -224,13 +224,19 @@ def download_processed_files():
                 # Extract the file name from blob path (e.g., "Processed-Files/train_100.csv" becomes "train_100.csv")
                 file_name = os.path.basename(blob.name)
 
-                # Generate signed URL using a cached function to avoid repetition
-                signed_url = generate_signed_url(blob)
+                # Generate a signed URL valid for 1 hour (3600 seconds)
+                signed_url = blob.generate_signed_url(
+                    expiration=3600,  # URL valid for 1 hour
+                    method="GET"
+                )
+
+                # Print signed URL to console for debugging
+                print(f"Generated signed URL for {file_name}: {signed_url}")
 
                 # Display the download link using HTML
                 st.markdown(
                     f"""
-                    <a href="{signed_url}" target="_blank" style="text-decoration:none;color:blue;">
+                    <a href="{signed_url}" download="{file_name}" target="_blank" style="text-decoration:none;color:blue;">
                         📥 Download {file_name}
                     </a>
                     """,

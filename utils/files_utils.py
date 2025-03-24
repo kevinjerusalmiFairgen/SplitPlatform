@@ -226,6 +226,7 @@ def download_processed_files():
                         📥 Download {file_name}
                     </a>
                 '''
+                print(signed_url)
                 st.markdown(html_link, unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error loading processed files: {e}")

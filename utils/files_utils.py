@@ -196,7 +196,7 @@ def get_label(metadata, column, value):
 def download_processed_files():
     """
     Loads processed files from the "Processed-Files" folder in your GCP bucket and 
-    provides a download button for each file so that customers can download the file.
+    provides a download link for each file so that customers can download the file.
     """
     try:
         # Create credentials and storage client
@@ -211,15 +211,16 @@ def download_processed_files():
         else:
             st.write("### Processed Files in GCP:")
             for blob in blobs:
-                # Download blob content as bytes
-                file_bytes = blob.download_as_bytes()
                 # Extract the file name from blob path (e.g., "Processed-Files/train_100.csv" becomes "train_100.csv")
                 file_name = os.path.basename(blob.name)
-                st.download_button(
-                    label=f"Download {file_name}",
-                    data=file_bytes,
-                    file_name=file_name,
-                    mime="application/octet-stream"
+
+                # Generate a signed URL valid for 1 hour (3600 seconds)
+                signed_url = blob.generate_signed_url(
+                    expiration=3600,  # URL valid for 1 hour
+                    method="GET"
                 )
+
+                # Display download link
+                st.markdown(f"[Download {file_name}]({signed_url})")
     except Exception as e:
         st.error(f"Error loading processed files: {e}")

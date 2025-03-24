@@ -64,8 +64,6 @@ def app():
         split_utils.plot_training_holdout(train_size, holdout_size)
 
     if st.button("Split Data"):
-        files_utils.empty_folder("outputs")
-
         # Generate multiple random states if bootstrapping is enabled, otherwise set to None
         random_states = [random.randint(1, 100) for _ in range(st.session_state["boostrap_occurences"])] if st.session_state["boostrap"] else None
 
@@ -82,7 +80,7 @@ def app():
         # Save results for each split (single or multiple depending on bootstrapping)
         for idx, (train_df, holdout_df, baseline_df) in enumerate(split_results):
             suffix = f"_batch_{idx+1}" if st.session_state["boostrap"] else ""
-            
+            st.write("XLSXXX")
             files_utils.save_file(df=train_df, metadata=meta, file_path=f"train_{train_size}{suffix}" + "." +  st.session_state["file_type"])
             files_utils.save_file(df=holdout_df, metadata=meta, file_path=f"holdout_{holdout_size}{suffix}" + "." + st.session_state["file_type"])
 

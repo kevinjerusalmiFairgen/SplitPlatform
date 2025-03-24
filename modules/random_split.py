@@ -80,7 +80,6 @@ def app():
         # Save results for each split (single or multiple depending on bootstrapping)
         for idx, (train_df, holdout_df, baseline_df) in enumerate(split_results):
             suffix = f"_batch_{idx+1}" if st.session_state["boostrap"] else ""
-            st.write("XLSXXX")
             files_utils.save_file(df=train_df, metadata=meta, file_path=f"train_{train_size}{suffix}" + "." +  st.session_state["file_type"])
             files_utils.save_file(df=holdout_df, metadata=meta, file_path=f"holdout_{holdout_size}{suffix}" + "." + st.session_state["file_type"])
 
